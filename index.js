@@ -1,5 +1,6 @@
 const fs = require("fs");
-const http=require('http')
+const http = require("http");
+const url = require("url");
 
 ////////////////////////////////////////// Files ///////////////////////////////////
 // Blocking, synchronous way
@@ -26,10 +27,28 @@ const http=require('http')
 // console.log("Reading...");
 
 //////////////////////////////////////// Server ////////////////////////////////////////
-http.createServer((req,res)=>{
-  res.end('Hello from the server !')
-  // console.log('request',req)
-  // console.log('respons',res)
-}).listen(8000,'127.0.0.1',()=>{
-  console.log('Listening to requests on port 8000')
-})
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
+// const dataObj = JSON.parse(data);
+// console.log(dataObj)
+
+const server = http.createServer((req, res) => {
+  const pathName = req.url;
+  if (pathName === "/" || pathName === "/overview") {
+    res.end("This is the Overview !");
+  } else if (pathName === "/product") {
+    res.end("This is the Product !");
+  } else if (pathName === "/api") {
+    // const productData = JSON.parse(data);
+    res.writeHead(200, { "Content-type": "application/json" });
+    res.end(data);
+  } else {
+    res.writeHead(404, {
+      "Content-type": "text/html",
+      name: "jamshid",
+    });
+    res.end("<h1>This page name not found !</h1>");
+  }
+});
+server.listen(8000, "127.0.0.1", () => {
+  console.log("Listening to requests on port 8000");
+});
