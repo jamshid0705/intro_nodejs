@@ -1,8 +1,8 @@
 const fs = require("fs");
 const http = require("http");
-const path = require("path");
 const url = require("url");
 
+const replaceTemplate=require('./modules/replaceTemplate')
 ////////////////////////////////////////// Files ///////////////////////////////////
 // Blocking, synchronous way
 // const textIn=fs.readFileSync('./txt/input.txt','utf-8')
@@ -28,19 +28,7 @@ const url = require("url");
 // console.log("Reading...");
 
 //////////////////////////////////////// Server ////////////////////////////////////////
-const replaceTemplate = (temp, product) => {
-  let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
-  output = output.replace(/{%IMAGE%}/g, product.image);
-  output = output.replace(/{%FROM%}/g, product.from);
-  output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
-  output = output.replace(/{%QUANTITY%}/g, product.quantity);
-  output = output.replace(/{%PRICE%}/g, product.price);
-  output = output.replace(/{%DESCRIPTION%}/g, product.description);
-  output = output.replace(/{%ID%}/g, product.id);
-  if (!product.organic)
-    output = output.replace("{%NOT_ORGANIC%}", "not-organic");
-  return output;
-};
+
 const tempOverview = fs.readFileSync(
   `./templates/template-overview.html`,
   "utf-8"
@@ -86,6 +74,7 @@ const server = http.createServer((req, res) => {
     res.end("<h1>This page name not found !</h1>");
   }
 });
+
 server.listen(8000, "127.0.0.1", () => {
   console.log("Listening to requests on port 8000");
 });
